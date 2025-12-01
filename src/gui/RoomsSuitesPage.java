@@ -79,21 +79,83 @@ public class RoomsSuitesPage extends JFrame {
         galleryPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         int IMAGE_WIDTH = 300, IMAGE_HEIGHT = 200;
-        for (int i = 1; i <= 6; i++) {
-            JPanel card = new JPanel();
-            card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        for (models.Room room : models.Room.roomList) {
+
+            // Initialize card container
+            JPanel card = new JPanel(new BorderLayout());
             card.setBackground(Color.WHITE);
+            card.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230), 1));
 
-            ImagePanel imgPanel = new ImagePanel("images/room" + i + ".jpg");
-            imgPanel.setPreferredSize(new Dimension(IMAGE_WIDTH, IMAGE_HEIGHT));
-            card.add(imgPanel);
+            // Header Image
+            ImagePanel imgPanel = new ImagePanel(room.getImagePath());
+            imgPanel.setPreferredSize(new Dimension(300, 200)); 
+            card.add(imgPanel, BorderLayout.NORTH);
 
+            // Details Panel
+            JPanel textPanel1 = new JPanel();
+            textPanel1.setLayout(new BoxLayout(textPanel1, BoxLayout.Y_AXIS));
+            textPanel1.setBackground(Color.WHITE);
+            textPanel1.setBorder(new EmptyBorder(15, 15, 20, 15)); // Padding
+
+            // Room Title
+            JLabel titleLabel = new JLabel(room.getName());
+            titleLabel.setFont(new Font("Serif", Font.PLAIN, 22)); 
+            titleLabel.setForeground(new Color(50, 50, 50));
+            titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            textPanel1.add(titleLabel);
             
-            JLabel descLabel = new JLabel("Room " + i);
-            descLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-            descLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
-            card.add(descLabel);
+            textPanel1.add(Box.createVerticalStrut(15)); 
 
+            // Room Size Indicator
+            JLabel sizeLabel = new JLabel("• " + room.getSize());
+            sizeLabel.setFont(new Font("SansSerif", Font.PLAIN, 13));
+            sizeLabel.setForeground(Color.DARK_GRAY);
+            sizeLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            textPanel1.add(sizeLabel);
+            
+            textPanel1.add(Box.createVerticalStrut(8)); 
+
+            // Feature Description
+            String firstFeature = (room.getFeatures().length > 0) ? room.getFeatures()[0] : "";
+            JLabel viewLabel = new JLabel("<html>• " + firstFeature + "</html>");
+            viewLabel.setFont(new Font("SansSerif", Font.PLAIN, 13));
+            viewLabel.setForeground(Color.DARK_GRAY);
+            viewLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            
+            // Enforce fixed height to maintain alignment across grid
+            viewLabel.setPreferredSize(new Dimension(200, 40)); 
+            textPanel1.add(viewLabel);
+
+            // Layout Spacing
+            textPanel1.add(Box.createVerticalGlue()); // Pushes content up
+            textPanel1.add(Box.createVerticalStrut(15));
+
+            // Navigation Link Button
+            JButton viewBtn = new JButton("View Details >");
+            viewBtn.setFont(new Font("SansSerif", Font.PLAIN, 14));
+            viewBtn.setForeground(new Color(197, 160, 89)); // Brand Gold
+            viewBtn.setBackground(Color.WHITE);
+            
+            // Style as hyperlink
+            viewBtn.setBorderPainted(false);      
+            viewBtn.setContentAreaFilled(false);  
+            viewBtn.setFocusPainted(false);       
+            viewBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            
+            // Alignment
+            viewBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+            viewBtn.setMargin(new Insets(0,0,0,0)); // Flush left alignment
+            
+            // Event Listener
+            viewBtn.addActionListener(e -> {
+                new RoomDetailPage(room).setVisible(true);
+                RoomsSuitesPage.this.dispose();
+            });
+            
+            textPanel1.add(viewBtn);
+
+            // Assemble Card
+            card.add(textPanel1, BorderLayout.CENTER);
             galleryPanel.add(card);
         }
 

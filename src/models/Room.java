@@ -32,6 +32,8 @@ public class Room {
     // 3. GETTERS
     public String getName() { return name; }
     public String getDescription() { return description; }
+    public String getBtype() { return this.Btype; }
+
     public String getImagePath() { return imagePath; }
     public String getSize() { return size; }
     public String[] getFeatures() { return features; }

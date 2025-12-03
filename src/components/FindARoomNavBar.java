@@ -7,6 +7,10 @@ import javax.swing.border.*;
 public class FindARoomNavBar extends JPanel {
 
     public FindARoomNavBar() {
+        this("Dec 9, 2025", "Dec 10, 2025", 1, 2, 0);
+    }
+    
+    public FindARoomNavBar(String checkIn, String checkOut, int rooms, int adults, int children) {
 
         setLayout(new FlowLayout(FlowLayout.LEFT, 10, 8)); 
         setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); 
@@ -21,7 +25,7 @@ public class FindARoomNavBar extends JPanel {
         add(txtLocation);
 
         // Labels
-        JLabel lblCheckIn = new JLabel("Dec 9, 2025");
+        JLabel lblCheckIn = new JLabel(checkIn);
         lblCheckIn.setFont(new Font("Arial", Font.PLAIN, 12));
         add(lblCheckIn);
 
@@ -29,11 +33,11 @@ public class FindARoomNavBar extends JPanel {
         lblNight.setFont(new Font("Arial", Font.PLAIN, 12));
         add(lblNight);
 
-        JLabel lblCheckOut = new JLabel("Dec 10, 2025");
+        JLabel lblCheckOut = new JLabel(checkOut);
         lblCheckOut.setFont(new Font("Arial", Font.PLAIN, 12));
         add(lblCheckOut);
 
-        JLabel lblGuests = new JLabel("1 Room, 2 Adults, 0 Children");
+        JLabel lblGuests = new JLabel(rooms + " Room" + (rooms != 1 ? "s" : "") + ", " + adults + " Adult" + (adults != 1 ? "s" : "") + ", " + children + " Child" + (children != 1 ? "ren" : ""));
         lblGuests.setFont(new Font("Arial", Font.PLAIN, 12));
         add(lblGuests);
 

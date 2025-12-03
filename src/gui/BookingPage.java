@@ -10,9 +10,23 @@ import java.awt.*;
 
 public class BookingPage extends JFrame {
 
-    public BookingPage() {
-        setTitle("Booking Page");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    private Room selectedRoom;
+    private String checkInDate;
+    private String checkOutDate;
+    private int numberOfRooms;
+    private int numberOfAdults;
+    private int numberOfChildren;
+
+    public BookingPage(Room room, String checkIn, String checkOut, int rooms, int adults, int children) {
+        this.selectedRoom = room;
+        this.checkInDate = checkIn;
+        this.checkOutDate = checkOut;
+        this.numberOfRooms = rooms;
+        this.numberOfAdults = adults;
+        this.numberOfChildren = children;
+        
+        setTitle("Booking Page - " + room.getName());
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 1200, 900);
         JPanel contentPane = new JPanel(new BorderLayout());
         contentPane.setBackground(Color.WHITE);
@@ -29,7 +43,7 @@ public class BookingPage extends JFrame {
         centerPanel.setBackground(Color.WHITE);
         contentPane.add(centerPanel, BorderLayout.CENTER);
 
-        centerPanel.add(new FindARoomNavBar());
+        centerPanel.add(new FindARoomNavBar(checkIn, checkOut, rooms, adults, children));
         centerPanel.add(new FindARoomTabPanel());
 
         // Table
@@ -66,12 +80,9 @@ public class BookingPage extends JFrame {
         gbc.gridwidth = 1;
         row++;
 
-        // ROOM LOOP
-        for (Room room : Room.roomList) {
-
-            int bedIndex = 0;
-
-          for (String bedType : new String[]{"Twin", "King"}) {
+        // Display only the selected room with Twin and King bed types
+        int bedIndex = 0;
+        for (String bedType : new String[]{"Twin", "King"}) {
 
     // COLUMN 1 — IMAGE ONLY ON THE FIRST
     JPanel col1 = new JPanel();
@@ -82,7 +93,7 @@ public class BookingPage extends JFrame {
         JLabel img = new JLabel();
         img.setPreferredSize(new Dimension(320, 190));
         try {
-            ImageIcon icon = new ImageIcon(room.getImagePath());
+            ImageIcon icon = new ImageIcon(selectedRoom.getImagePath());
             Image scaled = icon.getImage().getScaledInstance(320, 190, Image.SCALE_SMOOTH);
             img.setIcon(new ImageIcon(scaled));
         } catch (Exception e) {
@@ -92,11 +103,11 @@ public class BookingPage extends JFrame {
         col1.add(img);
         col1.add(Box.createVerticalStrut(8));
 
-        JLabel nm = new JLabel(room.getName() + " (" + bedType + ")");
+        JLabel nm = new JLabel(selectedRoom.getName() + " (" + bedType + ")");
         nm.setFont(new Font("Arial", Font.BOLD, 16));
         col1.add(nm);
 
-        JLabel size = new JLabel(room.getSize());
+        JLabel size = new JLabel(selectedRoom.getSize());
         size.setFont(new Font("Arial", Font.PLAIN, 12));
         col1.add(size);
 
@@ -169,7 +180,20 @@ public class BookingPage extends JFrame {
     JPanel col3 = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
     col3.setBackground(Color.WHITE);
 
-    double price = room.getPricePerNight(); 
+    // Create a temporary room instance with the bed type to calculate price
+    Room tempRoom = new Room(
+        selectedRoom.getName(),
+        selectedRoom.getType(),
+        bedType,
+        selectedRoom.getDescription(),
+        selectedRoom.getImagePath(),
+        selectedRoom.getSize(),
+        selectedRoom.getFeatures(),
+        selectedRoom.getAmenities(),
+        selectedRoom.getPricePerNight()
+    );
+    double price = tempRoom.calculatePrice();
+    
     JLabel priceLabel = new JLabel("PHP " + String.format("%,.0f", price));
     priceLabel.setFont(new Font("Arial", Font.BOLD, 15));
     col3.add(priceLabel);
@@ -201,41 +225,6 @@ public class BookingPage extends JFrame {
     }
 }
 
-// AFTER KING — FULL WIDTH SEPARATOR
-gbc.gridx = 0;
-gbc.gridy = row;
-gbc.gridwidth = 3;
-JSeparator full = new JSeparator();
-full.setForeground(new Color(220,220,220));
-tablePanel.add(full, gbc);
-gbc.gridwidth = 1;
-row++;
-
-
-
-if (bedIndex == 1) { 
-    gbc.gridx = 1;        
-    gbc.gridy = row;
-    gbc.gridwidth = 2;      
-    JSeparator midSep = new JSeparator();
-    midSep.setForeground(new Color(220, 220, 220));
-    tablePanel.add(midSep, gbc);
-    gbc.gridwidth = 1;
-
-} else {
-    
-    gbc.gridx = 0;         
-    gbc.gridy = row;
-    gbc.gridwidth = 3;      
-    JSeparator fullSep = new JSeparator();
-    fullSep.setForeground(new Color(220, 220, 220));
-    tablePanel.add(fullSep, gbc);
-    gbc.gridwidth = 1;
-}
-
-row++;
-        }
-
         JScrollPane scrollPane = new JScrollPane(tablePanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -246,7 +235,10 @@ row++;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
-            new BookingPage().setVisible(true);
+            // For testing - use first room in the list
+            if (Room.roomList.size() > 0) {
+                new BookingPage(Room.roomList.get(0), "Dec 9, 2025", "Dec 10, 2025", 1, 2, 0).setVisible(true);
+            }
         });
     }
 }

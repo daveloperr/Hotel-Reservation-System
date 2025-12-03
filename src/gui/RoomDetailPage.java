@@ -18,6 +18,7 @@ public class RoomDetailPage extends JFrame {
     private String tempCheckInDate = null;  // Stores 1st click
     private String checkInDate = null;      // Final start date
     private String checkOutDate = null;     // Final end date
+    private Room selectedRoom;              // Store the selected room
     
     // UI References
     private JLabel lblDateDisplay;
@@ -36,6 +37,7 @@ public class RoomDetailPage extends JFrame {
     private final int MAX_TOTAL_GUESTS = 6;
 
     public RoomDetailPage(Room room) {
+        this.selectedRoom = room;
         activeRooms.add(new RoomConfig());
 
         setTitle(room.getName() + " - Shangri-La");
@@ -276,16 +278,26 @@ public class RoomDetailPage extends JFrame {
         btnBook.setFocusPainted(false);
         btnBook.setBorderPainted(false);
         
-        // Debug output on click
+        // Open BookingPage with selected data
         btnBook.addActionListener(e -> {
-            System.out.println("--- BOOKING REQUEST ---");
-            System.out.println("Check-in: " + checkInDate);
-            System.out.println("Check-out: " + checkOutDate);
-            System.out.println("Total Rooms: " + activeRooms.size());
-            for(int i=0; i<activeRooms.size(); i++) {
-                RoomConfig r = activeRooms.get(i);
-                System.out.println("  Room " + (i+1) + ": Adults=" + r.adults + ", Children=" + r.children);
+            // Calculate total guests
+            int totalAdults = 0;
+            int totalChildren = 0;
+            for (RoomConfig r : activeRooms) {
+                totalAdults += r.adults;
+                totalChildren += r.children;
             }
+            
+            // Open BookingPage with booking details
+            BookingPage bookingPage = new BookingPage(
+                selectedRoom,
+                checkInDate != null ? checkInDate : "Not selected",
+                checkOutDate != null ? checkOutDate : "Not selected",
+                activeRooms.size(),
+                totalAdults,
+                totalChildren
+            );
+            bookingPage.setVisible(true);
         });
         
         bodyPanel.add(btnBook);

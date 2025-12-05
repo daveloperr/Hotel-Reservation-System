@@ -103,29 +103,31 @@ public class RoomDetailPage extends JFrame {
 
         bodyWrapper.add(titlePanel);
 
-        // --- Split Layout (Details vs Booking Card) ---
         JPanel contentArea = new JPanel(new GridBagLayout());
         contentArea.setBackground(Color.WHITE);
         contentArea.setBorder(new EmptyBorder(20, 0, 0, 0));
         contentArea.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.anchor = GridBagConstraints.NORTH;
 
-        // Left Col: Room Details (55%)
-        gbc.gridx = 0; 
-        gbc.gridy = 0;
-        gbc.weightx = 0.55; 
-        gbc.weighty = 1.0;
-        gbc.insets = new Insets(0, 0, 0, 40); 
-        contentArea.add(buildDetailsPanel(room), gbc);
+        // 1. Left Column (Room Details)
+        GridBagConstraints gbcLeft = new GridBagConstraints(); 
+        gbcLeft.fill = GridBagConstraints.BOTH;
+        gbcLeft.anchor = GridBagConstraints.NORTH;
+        gbcLeft.gridx = 0;
+        gbcLeft.gridy = 0;
+        gbcLeft.weightx = 0.55;
+        gbcLeft.weighty = 1.0;
+        gbcLeft.insets = new Insets(0, 0, 0, 40);
+        contentArea.add(buildDetailsPanel(room), gbcLeft);
 
-        // Right Col: Booking Card (45%)
-        gbc.gridx = 1; 
-        gbc.weightx = 0.45;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        contentArea.add(buildBookingCard(), gbc);
+        // 2. Right Column (Booking Card)
+        GridBagConstraints gbcRight = new GridBagConstraints();
+        gbcRight.fill = GridBagConstraints.BOTH;
+        gbcRight.anchor = GridBagConstraints.NORTH;
+        gbcRight.gridx = 1;
+        gbcRight.weightx = 0.45;
+        gbcRight.weighty = 1.0;
+        gbcRight.insets = new Insets(0, 0, 0, 0);
+        contentArea.add(buildBookingCard(), gbcRight);
 
         bodyWrapper.add(contentArea);
         mainContainer.add(bodyWrapper);

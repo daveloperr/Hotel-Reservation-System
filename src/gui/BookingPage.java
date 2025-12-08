@@ -203,7 +203,22 @@ public class BookingPage extends JFrame {
     btn.setForeground(Color.BLACK);
     btn.setFont(new Font("Arial", Font.BOLD, 12));
     btn.setFocusPainted(false);
+
+    btn.addActionListener(e -> {
+        CheckoutPage checkoutPage = new CheckoutPage(
+            tempRoom,
+            checkInDate,
+            checkOutDate,
+            numberOfRooms,
+            numberOfAdults,
+            numberOfChildren
+        );
+        checkoutPage.setVisible(true);
+        this.dispose();
+    });
+
     col3.add(btn);
+
 
     gbc.gridx = 2;
     gbc.anchor = GridBagConstraints.NORTHWEST; // TOP alignment

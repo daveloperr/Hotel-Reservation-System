@@ -76,23 +76,98 @@
 	        mainPanel.add(screen1); // add first screen
 	
 	        // --- SCREEN 2: CARDS ---
-	        JPanel screen2 = new JPanel(new GridLayout(1, 3, 20, 0));
+	        JPanel screen2 = new JPanel(new BorderLayout());
 	        screen2.setPreferredSize(new Dimension(900, 700));
 	        screen2.setBackground(Color.WHITE);
-	
-	        for (int i = 1; i <= 3; i++) {
-	            JPanel card = new JPanel(new BorderLayout());
-	            card.setBackground(new Color(220, 220, 220));
-	            JLabel imgLabel = new JLabel(new ImageIcon("images/room" + i + ".jpg"));
-	            imgLabel.setHorizontalAlignment(SwingConstants.CENTER);
-	            card.add(imgLabel, BorderLayout.CENTER);
-	            JLabel textLabel = new JLabel("Card " + i, SwingConstants.CENTER);
-	            textLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
-	            card.add(textLabel, BorderLayout.SOUTH);
-	            screen2.add(card);
+
+	        // --- TITLE ---
+	        JLabel offersTitle = new JLabel("Offers");
+	        offersTitle.setFont(new Font("Times New Roman", Font.BOLD, 36));
+	        offersTitle.setHorizontalAlignment(SwingConstants.CENTER);
+	        offersTitle.setBorder(BorderFactory.createEmptyBorder(50, 0, 20, 0)); // top and bottom margin
+	        screen2.add(offersTitle, BorderLayout.NORTH);
+
+	        // --- CARD PANEL ---
+	        JPanel cardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 20)); // horizontal gap=30, vertical gap=20
+	        cardPanel.setBackground(Color.WHITE);
+
+	        String[] images = {
+	                "images/room1.jpg",
+	                "images/room2.jpg",
+	                "images/room3.jpg"
+	        };
+	        String[] chips = {"Queen Bed", "50 sqm", "City View", "Breakfast"};
+
+	        for (int i = 0; i < images.length; i++) {
+	            JPanel card = new JPanel();
+	            card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+	            card.setBackground(Color.WHITE);
+	            card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true)); // only border, no extra internal padding
+	            card.setPreferredSize(new Dimension(300, 450)); // bigger and taller card
+
+	            // ----- IMAGE (full width of card) -----
+	            ImageIcon icon = new ImageIcon(images[i]);
+	            Image img = icon.getImage().getScaledInstance(card.getPreferredSize().width, 200, Image.SCALE_SMOOTH); // full width
+	            JLabel imgLabel = new JLabel(new ImageIcon(img));
+	            imgLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	            card.add(imgLabel);
+
+	            // ----- CHIPS -----
+	            JPanel chipsRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 8)); // horizontal gap=8, vertical gap=8 (top margin)
+	            chipsRow.setBackground(Color.WHITE);
+	            for (int j = 0; j < chips.length; j++) {
+	                JLabel chip = new JLabel(chips[j]);
+	                chip.setFont(new Font("Arial", Font.PLAIN, 12));
+	                chip.setBorder(BorderFactory.createCompoundBorder(
+	                        BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true),
+	                        BorderFactory.createEmptyBorder(5, 12, 5, 12)
+	                ));
+	                chipsRow.add(chip);
+
+	                // Extra spacing above last chip
+	                if (j == chips.length - 1) {
+	                    chip.setBorder(BorderFactory.createCompoundBorder(
+	                            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true),
+	                            BorderFactory.createEmptyBorder(10, 12, 5, 12) // more top padding for last chip
+	                    ));
+	                }
+	            }
+	            card.add(Box.createRigidArea(new Dimension(0, 10))); // space between image and chips
+	            card.add(chipsRow);
+	            card.add(Box.createVerticalGlue()); // push phrase and button to bottom
+
+	       
+	         // ----- BUTTON -----
+	            JButton viewBtn = new JButton("View Details");
+	            viewBtn.setFocusPainted(false);
+	            viewBtn.setContentAreaFilled(false); // transparent
+	            viewBtn.setBorder(BorderFactory.createLineBorder(new Color(212, 175, 55), 2)); // gold border
+	            viewBtn.setForeground(new Color(212, 175, 55));
+	            viewBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+	            viewBtn.setMaximumSize(new Dimension(150, 45)); // bigger button
+	            viewBtn.setPreferredSize(new Dimension(150, 45));
+	            card.add(Box.createRigidArea(new Dimension(0, 15))); 
+	            card.add(viewBtn);
+	            card.add(Box.createRigidArea(new Dimension(0, 20))); 
+
+	            cardPanel.add(card);
 	        }
-	        mainPanel.add(screen2); // add second screen
-	
+
+
+
+	        // Wrap cards in horizontal scroll
+	        JScrollPane cardScroll = new JScrollPane(cardPanel,
+	                JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+	                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	        cardScroll.setBorder(null);
+	        cardScroll.getHorizontalScrollBar().setUnitIncrement(20);
+	        cardScroll.setPreferredSize(new Dimension(900, 500)); // card area height
+
+	        screen2.add(cardScroll, BorderLayout.CENTER); // add card scroll in center
+	        mainPanel.add(screen2);
+
+
+
 	     // --- SCREEN 3: ABOUT ---
 	        JPanel screen3 = new JPanel(new GridLayout(1, 2));
 	        screen3.setPreferredSize(new Dimension(900, 700));

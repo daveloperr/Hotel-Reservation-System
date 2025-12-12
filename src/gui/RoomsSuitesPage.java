@@ -15,6 +15,8 @@ public class RoomsSuitesPage extends JFrame {
 
         setTitle("Rooms & Suites - Hotel Reservation");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+
         setBounds(100, 50, 1200, 900);
         setLocationRelativeTo(null);
 

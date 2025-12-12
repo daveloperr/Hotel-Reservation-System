@@ -25,6 +25,9 @@ public class BookingPage extends JFrame {
         this.numberOfAdults = adults;
         this.numberOfChildren = children;
         
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        
         setTitle("Booking Page - " + room.getName());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 1200, 900);

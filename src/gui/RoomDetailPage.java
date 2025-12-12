@@ -39,6 +39,7 @@ public class RoomDetailPage extends JFrame {
     public RoomDetailPage(Room room) {
         this.selectedRoom = room;
         activeRooms.add(new RoomConfig());
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         setTitle(room.getName() + " - Shangri-La");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

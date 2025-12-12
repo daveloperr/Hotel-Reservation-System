@@ -26,7 +26,7 @@ public class ConfirmationSummaryPage extends JFrame {
 
         setTitle("Confirm Reservation - Shangri-La");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 1000, 800);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
 
         // Main Scroll Pane

@@ -28,7 +28,7 @@ public class NavBar extends JPanel {
         // --- Black navigation bar ---
         JPanel userNavBar = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 15));
         userNavBar.setBackground(new Color(0x33, 0x33, 0x33));
-        String[] navItems = {"HOME", "ABOUT", "ROOM & SUITES", "GALLERY"};
+        String[] navItems = {"HOME", "ROOM & SUITES", "GALLERY"};
 
         for (String navItem : navItems) {
             final String item = navItem;
@@ -45,10 +45,10 @@ public class NavBar extends JPanel {
                             new HomePage().setVisible(true);
                             SwingUtilities.getWindowAncestor(NavBar.this).dispose();
                             break;
-                        case "ABOUT":
-                            new AboutPage().setVisible(true);
-                            SwingUtilities.getWindowAncestor(NavBar.this).dispose();
-                            break;
+//                        case "ABOUT":
+//                            new AboutPage().setVisible(true);
+//                            SwingUtilities.getWindowAncestor(NavBar.this).dispose();
+//                            break;
                         case "ROOM & SUITES":
                             new RoomsSuitesPage().setVisible(true);
                             SwingUtilities.getWindowAncestor(NavBar.this).dispose();

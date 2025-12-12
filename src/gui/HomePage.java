@@ -40,10 +40,22 @@
 	public class HomePage extends JFrame {
 	
 	    private static final long serialVersionUID = 1L;
-	
+	    private static final int IDEAL_CONTENT_WIDTH = 950; 
+
 	    public HomePage() {
+	    	
+
+	        int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+	        int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+	        
+	        
+	        final int MAIN_CONTENT_WIDTH = Math.min(IDEAL_CONTENT_WIDTH, screenWidth - 100); 
+	        final int START_X = (screenWidth - MAIN_CONTENT_WIDTH) / 2; // New dynamic center anchor
+
+	        
+	        
 	        setTitle("Hotel Reservation - Home");
-	        setSize(900, 700);
+	        setExtendedState(JFrame.MAXIMIZED_BOTH);
 	        setLocationRelativeTo(null);
 	        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	

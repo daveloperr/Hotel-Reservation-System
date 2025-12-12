@@ -55,6 +55,13 @@ public class CheckoutPage extends JFrame {
     private JLabel chargesTotalLabel;
     private double addonsTotal = 0;
     private JLabel extraValue;
+    private JTextField firstNameField;
+    private JTextField lastNameField;
+    private JTextField emailField;
+    private JComboBox<String> countryCombo;
+    private JTextField iddCodeField;
+    private JTextField mobileNumberField;
+    private JCheckBox smsCheck;
 
 
     private static final Color COLOR_PANEL_BACKGROUND = new Color(245, 245, 245);
@@ -347,6 +354,7 @@ public class CheckoutPage extends JFrame {
         formPanel.setBackground(BACKGROUND_COLOR);
         formPanel.setAlignmentX(LEFT_ALIGNMENT);
 
+        // --- Name Fields ---
         JPanel nameRow = new JPanel(new GridLayout(1, 2, 5, 0));
         nameRow.setBackground(BACKGROUND_COLOR);
 
@@ -355,7 +363,9 @@ public class CheckoutPage extends JFrame {
         JLabel firstNameLabel = new JLabel("Given/ First Name*");
         firstNameLabel.setFont(LABEL_FONT);
         firstNamePanel.add(firstNameLabel, BorderLayout.NORTH);
-        JTextField firstNameField = new JTextField();
+        
+        // FIX 1: Remove "JTextField"
+        firstNameField = new JTextField(); 
         firstNameField.setFont(LABEL_FONT);
         firstNameField.setMargin(new Insets(10, 10, 10, 10));
         firstNamePanel.add(firstNameField, BorderLayout.CENTER);
@@ -365,7 +375,9 @@ public class CheckoutPage extends JFrame {
         JLabel lastNameLabel = new JLabel("Family/ Last Name*");
         lastNameLabel.setFont(LABEL_FONT);
         lastNamePanel.add(lastNameLabel, BorderLayout.NORTH);
-        JTextField lastNameField = new JTextField();
+        
+        // FIX 2: Remove "JTextField"
+        lastNameField = new JTextField();
         lastNameField.setFont(LABEL_FONT);
         lastNameField.setMargin(new Insets(10, 10, 10, 10));
         lastNamePanel.add(lastNameField, BorderLayout.CENTER);
@@ -375,12 +387,15 @@ public class CheckoutPage extends JFrame {
         formPanel.add(nameRow);
         formPanel.add(Box.createVerticalStrut(15));
 
+        // --- Email Field ---
         JPanel emailRow = new JPanel(new BorderLayout(5, 0));
         emailRow.setBackground(BACKGROUND_COLOR);
         JLabel emailLabel = new JLabel("Email*");
         emailLabel.setFont(LABEL_FONT);
         emailRow.add(emailLabel, BorderLayout.NORTH);
-        JTextField emailField = new JTextField();
+        
+        // FIX 3: Remove "JTextField"
+        emailField = new JTextField();
         emailField.setFont(LABEL_FONT);
         emailField.setMargin(new Insets(10, 10, 10, 10));
         emailRow.add(emailField, BorderLayout.CENTER);
@@ -388,24 +403,25 @@ public class CheckoutPage extends JFrame {
         formPanel.add(emailRow);
         formPanel.add(Box.createVerticalStrut(15));
 
+        // --- Country Field ---
         JPanel countryRow = new JPanel(new BorderLayout(5, 0));
         countryRow.setBackground(BACKGROUND_COLOR);
         JLabel countryLabel = new JLabel("Country / Region*");
         countryLabel.setFont(LABEL_FONT);
         countryRow.add(countryLabel, BorderLayout.NORTH);
-        String[] countries = {
-        		"Please select", "United States", "China", "Philippines"
-		};
-        JComboBox<String> countryCombo = new JComboBox<>(countries);
+        String[] countries = { "Please select", "United States", "China", "Philippines" };
+        
+        // FIX 4: Remove "JComboBox<String>"
+        countryCombo = new JComboBox<>(countries);
         countryCombo.setFont(LABEL_FONT);
         countryCombo.setBackground(Color.WHITE); 
         countryCombo.setPreferredSize(new Dimension(countryCombo.getPreferredSize().width, 35));
 
         countryRow.add(countryCombo, BorderLayout.CENTER);
-        
         formPanel.add(countryRow);
         formPanel.add(Box.createVerticalStrut(15));
 
+        // --- Mobile Fields (THIS IS WHERE YOUR ERROR WAS) ---
         JPanel mobileRow = new JPanel(new BorderLayout(5, 0));
         mobileRow.setBackground(BACKGROUND_COLOR);
         JLabel mobileLabel = new JLabel("Mobile*");
@@ -414,14 +430,16 @@ public class CheckoutPage extends JFrame {
         JPanel mobilePanel = new JPanel(new BorderLayout(5, 0));
         mobilePanel.setBackground(BACKGROUND_COLOR);
 
-        JTextField iddCodeField = new JTextField("+IDD Code");
+        // FIX 5: Remove "JTextField"
+        iddCodeField = new JTextField("+IDD Code");
         iddCodeField.setFont(LABEL_FONT);
         iddCodeField.setForeground(new Color(150, 150, 150));
         iddCodeField.setPreferredSize(new Dimension(100, 35));
         iddCodeField.setMargin(new Insets(5, 5, 5, 5));
         mobilePanel.add(iddCodeField, BorderLayout.WEST);
 
-        JTextField mobileNumberField = new JTextField();
+        // FIX 6: Remove "JTextField"
+        mobileNumberField = new JTextField();
         mobileNumberField.setFont(LABEL_FONT);
         mobileNumberField.setMargin(new Insets(10, 10, 10, 10));
         mobilePanel.add(mobileNumberField, BorderLayout.CENTER);
@@ -430,7 +448,8 @@ public class CheckoutPage extends JFrame {
         formPanel.add(mobileRow);
         formPanel.add(Box.createVerticalStrut(15));
 
-        JCheckBox smsCheck = new JCheckBox("Send my reservation confirmation by SMS");
+        // FIX 7: Remove "JCheckBox"
+        smsCheck = new JCheckBox("Send my reservation confirmation by SMS");
         smsCheck.setBackground(BACKGROUND_COLOR);
         smsCheck.setFont(LABEL_FONT);
 
@@ -954,6 +973,23 @@ public class CheckoutPage extends JFrame {
         bookNowButton.setPreferredSize(new Dimension(0, 30));
         bookNowButton.setMinimumSize(new Dimension(0, 30));
         bookNowButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        bookNowButton.addActionListener(e -> {
+        	checkout.setGuestInfo(
+        	        firstNameField.getText(),
+        	        lastNameField.getText(),
+        	        emailField.getText(),
+        	        (String) countryCombo.getSelectedItem(),
+        	        iddCodeField.getText(),
+        	        mobileNumberField.getText(),
+        	        smsCheck.isSelected()
+        	    );
+            // Open the PaymentPage and pass the current checkout data
+            PaymentPage paymentPage = new PaymentPage(this.checkout);
+            paymentPage.setVisible(true);
+            
+            // Close the current Checkout window
+            this.dispose();
+        });
         buttonPanel.add(bookNowButton, BorderLayout.CENTER);
         contentPanel.add(buttonPanel, grid);
 

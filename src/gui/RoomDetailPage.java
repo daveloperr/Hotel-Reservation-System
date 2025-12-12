@@ -282,6 +282,16 @@ public class RoomDetailPage extends JFrame {
         
         // Open BookingPage with selected data
         btnBook.addActionListener(e -> {
+        	// check if date is selected
+            if (checkInDate == null || checkOutDate == null) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Please select both check-in and check-out dates before booking.",
+                    "Missing Dates",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return; // Stop execution
+            }
             // Calculate total guests
             int totalAdults = 0;
             int totalChildren = 0;

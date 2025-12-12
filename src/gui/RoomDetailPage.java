@@ -9,6 +9,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import models.Room;
 import models.ImagePanel;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class RoomDetailPage extends JFrame {
 
@@ -660,47 +663,77 @@ public class RoomDetailPage extends JFrame {
         Dimension dim = new Dimension(45, 45);
         cell.setPreferredSize(dim);
         cell.setMaximumSize(dim);
-        
+
+        // Construct the date object for this specific cell
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d yyyy", Locale.ENGLISH);
+        String dateString = month + " " + day + " " + year;
+        LocalDate cellDate = LocalDate.parse(dateString, formatter);
+
+        LocalDate today = LocalDate.of(2025, 12, 13); 
+
+        boolean isPast = cellDate.isBefore(today);
+        // ---------------------
+
         cell.setBackground(isSelected ? new Color(153, 126, 61) : Color.WHITE);
 
         JLabel lblDay = new JLabel(String.valueOf(day));
         lblDay.setFont(new Font("SansSerif", Font.PLAIN, 14));
         lblDay.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblDay.setForeground(isSelected ? Color.WHITE : Color.BLACK);
         
+        // If past, make text light gray. Otherwise normal black/white.
+        if (isPast) {
+            lblDay.setForeground(Color.LIGHT_GRAY);
+        } else {
+            lblDay.setForeground(isSelected ? Color.WHITE : Color.BLACK);
+        }
+
         JLabel lblPrice = new JLabel(price);
         lblPrice.setFont(new Font("SansSerif", Font.PLAIN, 10));
         lblPrice.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblPrice.setForeground(isSelected ? Color.WHITE : new Color(180, 140, 60)); 
+        
+        // If past, hide price or make gray
+        if (isPast) {
+            lblPrice.setForeground(new Color(230, 230, 230));
+        } else {
+            lblPrice.setForeground(isSelected ? Color.WHITE : new Color(180, 140, 60));
+        }
 
         cell.add(Box.createVerticalGlue());
         cell.add(lblDay);
         cell.add(Box.createVerticalStrut(2));
         cell.add(lblPrice);
         cell.add(Box.createVerticalGlue());
-        
-        if (!isSelected) {
+
+        // Only add the mouse listener if the date is NOT in the past
+        if (!isSelected && !isPast) {
             cell.setCursor(new Cursor(Cursor.HAND_CURSOR));
             cell.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     String clickedDate = month + " " + day + ", " + year;
-                    
+
                     // Logic: 1st click = Start Date, 2nd Click = End Date
                     if (tempCheckInDate == null) {
                         tempCheckInDate = clickedDate;
-                        checkInDate = clickedDate; 
+                        checkInDate = clickedDate;
                         lblDateDisplay.setText(tempCheckInDate + " / Select Check-out...");
                         cell.setBackground(new Color(240, 240, 240)); // Feedback
                     } else {
-                        checkOutDate = clickedDate;
-                        lblDateDisplay.setText(tempCheckInDate + " / " + clickedDate);
-                        popup.setVisible(false);
-                        tempCheckInDate = null;
+                        // Validate that checkout is after checkin
+                        LocalDate checkIn = LocalDate.parse(tempCheckInDate, DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH));
+                        if (cellDate.isAfter(checkIn)) {
+                            checkOutDate = clickedDate;
+                            lblDateDisplay.setText(tempCheckInDate + " / " + clickedDate);
+                            popup.setVisible(false);
+                            tempCheckInDate = null;
+                        } else {
+                            JOptionPane.showMessageDialog(cell, "Check-out must be after Check-in");
+                        }
                     }
                 }
             });
         }
+        
         return cell;
     }
 

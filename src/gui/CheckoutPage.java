@@ -1,6 +1,11 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.text.NumberFormat;
+import java.util.Locale;
+import java.text.DecimalFormat;
+import javax.swing.JOptionPane;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -88,6 +93,21 @@ public class CheckoutPage extends JFrame {
     private static final Font LABEL_FONT = new Font("Arial", Font.PLAIN, 12);
     private static final Font FONT_NOTE = new Font("Arial", Font.PLAIN, 11);
     private static final Font NOTE_FONT = new Font("Arial", Font.PLAIN, 11);
+    
+    private static final DecimalFormat MONEY = new DecimalFormat("#,##0.00");
+
+    
+    private static final NumberFormat CURRENCY = NumberFormat.getNumberInstance();
+    static {
+        CURRENCY.setMinimumFractionDigits(2);
+        CURRENCY.setMaximumFractionDigits(2);
+    }
+
+    private static final NumberFormat CNY_FORMAT = NumberFormat.getNumberInstance(Locale.CHINA);
+    static {
+        CNY_FORMAT.setMinimumFractionDigits(2);
+        CNY_FORMAT.setMaximumFractionDigits(2);
+    }
 
     String linkHex = String.format("#%06x", COLOR_LINK.getRGB() & 0xFFFFFF);
     String goldHex = String.format("#%06x", COLOR_PRIMARY_ACTION.getRGB() & 0xFFFFFF);
@@ -657,7 +677,7 @@ public class CheckoutPage extends JFrame {
         double cnyRate = 0.13; // example value; replace if needed
         double cnyConverted = checkout.getTotalCharges() * cnyRate;
 
-        // ========= ROOM CHARGES =========
+     // ========= ROOM CHARGES =========
         grid.gridy = 0;
         grid.insets = new Insets(5, 0, 5, 0);
 
@@ -669,7 +689,7 @@ public class CheckoutPage extends JFrame {
         roomLabel.setFont(LABEL_FONT.deriveFont(Font.BOLD));
 
         JLabel roomValue = new JLabel(
-            String.format("PHP %.2f", checkout.getRoomCharges()),
+            "PHP " + MONEY.format(checkout.getRoomCharges()),
             SwingConstants.RIGHT
         );
         roomValue.setFont(LABEL_FONT);
@@ -678,8 +698,9 @@ public class CheckoutPage extends JFrame {
         roomChargesPanel.add(roomLabel, BorderLayout.WEST);
         roomChargesPanel.add(roomValue, BorderLayout.EAST);
         contentPanel.add(roomChargesPanel, grid);
-        
-     // ========= EXTRA CHARGES =========
+
+
+        // ========= EXTRA CHARGES =========
         grid.gridy++;
         JPanel extraPanel = new JPanel(new BorderLayout(10, 0));
         extraPanel.setBackground(BACKGROUND_COLOR);
@@ -688,9 +709,9 @@ public class CheckoutPage extends JFrame {
         JLabel extraLabel = new JLabel("Extra Charges");
         extraLabel.setFont(LABEL_FONT.deriveFont(Font.BOLD));
 
-        double extraCharges = checkout.getServicesTotal(); // retrieves total add-on service charges
-        extraValue = new JLabel( // assign to class-level field
-            String.format("PHP %.2f", extraCharges),
+        double extraCharges = checkout.getServicesTotal();
+        extraValue = new JLabel(
+            "PHP " + MONEY.format(extraCharges),
             SwingConstants.RIGHT
         );
         extraValue.setFont(LABEL_FONT);
@@ -699,8 +720,6 @@ public class CheckoutPage extends JFrame {
         extraPanel.add(extraLabel, BorderLayout.WEST);
         extraPanel.add(extraValue, BorderLayout.EAST);
         contentPanel.add(extraPanel, grid);
-
-
 
 
         // ========= SERVICE TAX =========
@@ -713,7 +732,7 @@ public class CheckoutPage extends JFrame {
         serviceLabel.setFont(LABEL_FONT.deriveFont(Font.BOLD));
 
         JLabel serviceValue = new JLabel(
-            String.format("PHP %.2f", checkout.getServiceTax()),
+            "PHP " + MONEY.format(checkout.getServiceTax()),
             SwingConstants.RIGHT
         );
         serviceValue.setFont(LABEL_FONT);
@@ -722,6 +741,7 @@ public class CheckoutPage extends JFrame {
         servicePanel.add(serviceLabel, BorderLayout.WEST);
         servicePanel.add(serviceValue, BorderLayout.EAST);
         contentPanel.add(servicePanel, grid);
+
 
         // ========= MEMBER DISCOUNT =========
         grid.gridy++;
@@ -734,7 +754,7 @@ public class CheckoutPage extends JFrame {
         memberLabel.setFont(LABEL_FONT.deriveFont(Font.BOLD));
 
         JLabel memberValue = new JLabel(
-            String.format("- PHP %.2f", checkout.getMemberDiscount()),
+            "- PHP " + MONEY.format(checkout.getMemberDiscount()),
             SwingConstants.RIGHT
         );
         memberValue.setFont(LABEL_FONT);
@@ -743,6 +763,7 @@ public class CheckoutPage extends JFrame {
         memberPanel.add(memberLabel, BorderLayout.WEST);
         memberPanel.add(memberValue, BorderLayout.EAST);
         contentPanel.add(memberPanel, grid);
+
 
         // ========= TOTAL CHARGES =========
         grid.gridy++;
@@ -756,17 +777,17 @@ public class CheckoutPage extends JFrame {
         totalLabel.setFont(LABEL_FONT.deriveFont(Font.BOLD));
 
         JLabel totalValue = new JLabel(
-            String.format("approx. PHP %.2f", checkout.getTotalCharges()),
+            "approx. PHP " + MONEY.format(checkout.getTotalCharges()),
             SwingConstants.RIGHT
         );
         totalValue.setFont(LABEL_FONT.deriveFont(Font.BOLD));
         totalValue.setForeground(TEXT_COLOR);
-        
         chargesTotalLabel = totalValue;
 
         totalPanel.add(totalLabel, BorderLayout.WEST);
         totalPanel.add(totalValue, BorderLayout.EAST);
         contentPanel.add(totalPanel, grid);
+
 
         // ========= TOTAL CNY =========
         grid.gridy++;
@@ -777,7 +798,7 @@ public class CheckoutPage extends JFrame {
         cnyTotalPanel.setBorder(new EmptyBorder(0, 15, 0, 15));
 
         JLabel cnyTotalValue = new JLabel(
-            String.format("CNY %.2f", cnyConverted),
+            "CNY " + MONEY.format(cnyConverted),
             SwingConstants.RIGHT
         );
         cnyTotalValue.setFont(NOTE_FONT);
@@ -786,6 +807,7 @@ public class CheckoutPage extends JFrame {
         cnyTotalPanel.add(new JLabel(""), BorderLayout.WEST);
         cnyTotalPanel.add(cnyTotalValue, BorderLayout.EAST);
         contentPanel.add(cnyTotalPanel, grid);
+
 
         // ========= AMOUNT TO PAY NOW =========
         grid.gridy++;
@@ -799,7 +821,7 @@ public class CheckoutPage extends JFrame {
         amountLabel.setFont(LABEL_FONT.deriveFont(Font.BOLD));
 
         JLabel amountValue = new JLabel(
-            String.format("approx. PHP %.2f", checkout.getTotalCharges()),
+            "approx. PHP " + MONEY.format(checkout.getTotalCharges()),
             SwingConstants.RIGHT
         );
         amountValue.setFont(LABEL_FONT.deriveFont(Font.BOLD));
@@ -808,6 +830,7 @@ public class CheckoutPage extends JFrame {
         amountPanel.add(amountLabel, BorderLayout.WEST);
         amountPanel.add(amountValue, BorderLayout.EAST);
         contentPanel.add(amountPanel, grid);
+
 
         // ========= AMOUNT CNY =========
         grid.gridy++;
@@ -818,7 +841,7 @@ public class CheckoutPage extends JFrame {
         cnyAmountPanel.setBorder(new EmptyBorder(0, 15, 0, 15));
 
         JLabel cnyAmountValue = new JLabel(
-            String.format("CNY %.2f", cnyConverted),
+            "CNY " + MONEY.format(cnyConverted),
             SwingConstants.RIGHT
         );
         cnyAmountValue.setFont(NOTE_FONT);
@@ -827,6 +850,7 @@ public class CheckoutPage extends JFrame {
         cnyAmountPanel.add(new JLabel(""), BorderLayout.WEST);
         cnyAmountPanel.add(cnyAmountValue, BorderLayout.EAST);
         contentPanel.add(cnyAmountPanel, grid);
+
 
      // ========= GUARANTEE =========
         grid.gridy++;
@@ -977,20 +1001,38 @@ public class CheckoutPage extends JFrame {
         bookNowButton.setMinimumSize(new Dimension(0, 30));
         bookNowButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         bookNowButton.addActionListener(e -> {
-        	checkout.setGuestInfo(
-        	        firstNameField.getText(),
-        	        lastNameField.getText(),
-        	        emailField.getText(),
-        	        (String) countryCombo.getSelectedItem(),
-        	        iddCodeField.getText(),
-        	        mobileNumberField.getText(),
-        	        smsCheck.isSelected()
-        	    );
-            // Open the PaymentPage and pass the current checkout data
+
+            // ========= VALIDATION =========
+            if (firstNameField.getText().trim().isEmpty() ||
+                lastNameField.getText().trim().isEmpty() ||
+                emailField.getText().trim().isEmpty() ||
+                iddCodeField.getText().trim().isEmpty() ||
+                mobileNumberField.getText().trim().isEmpty()) {
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Please fill in all required information first.",
+                    "Incomplete Information",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return; // STOP here, do not continue
+            }
+
+            // ========= IF VALID, SAVE DATA =========
+            checkout.setGuestInfo(
+                firstNameField.getText(),
+                lastNameField.getText(),
+                emailField.getText(),
+                (String) countryCombo.getSelectedItem(),
+                iddCodeField.getText(),
+                mobileNumberField.getText(),
+                smsCheck.isSelected()
+            );
+
+            // ========= OPEN PAYMENT PAGE =========
             PaymentPage paymentPage = new PaymentPage(this.checkout);
             paymentPage.setVisible(true);
-            
-            // Close the current Checkout window
+
             this.dispose();
         });
         buttonPanel.add(bookNowButton, BorderLayout.CENTER);

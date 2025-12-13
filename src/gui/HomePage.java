@@ -146,7 +146,24 @@
 	            }
 	            card.add(Box.createRigidArea(new Dimension(0, 10))); // space between image and chips
 	            card.add(chipsRow);
-	            card.add(Box.createVerticalGlue()); // push phrase and button to bottom
+
+	            String[] roomTitles = {
+	            	    "Deluxe Room",
+	            	    "Superior Room",
+	            	    "Horizon Club"
+	            	};
+
+	            
+	         // ----- CENTERED TEXT -----
+	            JLabel desc = new JLabel(roomTitles[i]); 
+	            desc.setFont(new Font("Serif", Font.PLAIN, 16));
+	            desc.setForeground(Color.DARK_GRAY);
+	            desc.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	            card.add(Box.createRigidArea(new Dimension(0, 15)));
+	            card.add(desc);
+
+	            card.add(Box.createVerticalGlue()); 
 
 	       
 	         // ----- BUTTON -----
